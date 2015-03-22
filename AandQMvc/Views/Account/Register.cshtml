@@ -1,0 +1,116 @@
+﻿@{
+    ViewBag.Title = "为图网 - 注册";
+    Layout = null;
+}
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width" />
+    <title>为图网 - 注册</title>
+    <link href="http://cdn.bootcss.com/bootstrap/3.3.2/css/bootstrap.min.css" rel="stylesheet" />
+    @Scripts.Render("http://cdn.bootcss.com/angular.js/1.2.0rc3/angular.min.js")
+
+</head>
+<body ng-app="app" ng-controller="MainController as main" style="background-color: #3b3a53;">
+    <div ng-show="main.showSuccess==true" class="alert alert-success alert-dismissable">
+        @*<button type="button" class="close" data-dismiss="alert"
+                aria-hidden="true">
+            &times;
+        </button>*@
+        {{main.successMsg}}
+    </div>
+    <div ng-show="main.showError==true" class="alert alert-danger alert-dismissable">
+        @*<button type="button" class="close" data-dismiss="alert"
+                aria-hidden="true">
+            &times;
+        </button>*@
+        {{main.errorMsg}}
+    </div>
+    <div class="container" style="width:500px;  ">
+        <h2 style="color:white;">注册</h2>
+        <div class="panel" style="min-height:190px;width:350px;  border:1px solid grey; padding:20px;">
+            <form ng-submit="main.processForm()" name="main.userForm" method="post" class="bs-example bs-example-form" role="form">
+                <div class="form-group">
+                    <div class="input-group">
+                        <span class="input-group-addon">邮箱：</span>
+                        <input name="email" ng-model="main.formData.email"
+                               required type="email" class="form-control"
+                               placeholder="example@site.com">
+                    </div>
+                    <span style="color:red;" ng-show="main.userForm.email.$dirty&&main.userForm.email.$invalid">
+                        <span ng-show="main.userForm.email.$error.required">必须填写用户名</span>
+                        <span ng-show="main.userForm.email.$error.email">邮箱格式不正确</span>
+                    </span>
+                </div>
+                <div class="input-group">
+                    <span class="input-group-addon">密码：</span>
+                    <input name="password" ng-model="main.formData.password" ng-maxlength="20" ng-minlength="6" required type="password" class="form-control" placeholder="数字和字母，长度大于 8 位">
+                </div>
+                <span style="color:red;" ng-show="main.userForm.password.$dirty&&main.userForm.password.$invalid">
+                    <span ng-show="main.userForm.password.$error.required">请输入密码</span>
+                    <span ng-show="main.userForm.password.$error.minlength">密码长度不能小于6个字符！</span>
+                    <span ng-show="main.userForm.password.$error.maxlength">密码长度不能大于20个字符！</span>
+                </span>
+                <br>
+                <div class="input-group" style="float:right;">
+                    <button class="btn btn-primary">
+                        注册
+                    </button>
+                </div>
+            </form>
+        </div>
+
+    </div>
+    <script>
+        angular.module('app', []);
+        angular.module('app').controller("MainController", function ($http) {
+            var vm = this;
+            vm.formData = {};
+            vm.showError = false;
+            vm.errorMsg = "";
+            vm.showSuccess = false;
+            vm.successMsg = "";
+            vm.processForm = function () {
+                //email
+                $http.post("/Account/ExistEmail", { email: vm.formData.email }).success(function (resp) {
+                    if (resp.Status != 0) {
+                        ShowMsg(false, "该email已经被注册了！", vm);
+                    }
+                    else {
+                        $http.post("/Account/AddAccount", vm.formData)
+                           .success(function (resp) {
+                               if (resp.Status == 0) {
+                                   //注册成功
+                                   ShowMsg(true, resp.Msg, vm);
+                                   window.location.href = "/";
+                               }
+                               else {
+                                   ShowMsg(false, resp.Msg, vm);
+                               }
+                               //vm.respose = data;
+                           }).error(function () {
+                               //alert("出错了！");
+                               alert("网络错误，请重试~");
+                           });
+                    }
+                });
+
+            };
+        });
+        function ShowMsg(success, msg, vm) {
+            vm.showError = !success;
+            vm.showSuccess = success;
+            if (success == true) {                
+                vm.errorMsg = "";                
+                vm.successMsg = msg;
+            }
+            else {
+                vm.errorMsg = msg;
+                vm.successMsg = "";
+            }
+        }
+    </script>
+</body>
+</html>
+
