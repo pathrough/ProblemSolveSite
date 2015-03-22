@@ -16,7 +16,7 @@ namespace MvcApplication1.Models
             }
             else
             {
-                return (Regex.IsMatch(email, @"^\w+@[a-zA-Z_]+?\.[a-zA-Z]{2,3}$"));
+                return (Regex.IsMatch(email, @"^\w+@[a-zA-Z_]+?\.\w{2,5}$"));
             }
         }
     }
