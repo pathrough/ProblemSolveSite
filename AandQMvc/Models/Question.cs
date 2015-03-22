@@ -21,6 +21,7 @@ namespace MvcApplication1.Models
         public long AnserID { get; set; }
         public string Content { get; set; }
         public long QuestionID { get; set; }
+        public long AccountID { get; set; }
     }
 
 }

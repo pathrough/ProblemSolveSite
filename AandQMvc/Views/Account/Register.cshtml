@@ -27,7 +27,7 @@
         </button>*@
         {{main.errorMsg}}
     </div>
-    <div class="container" style="width:500px;  ">
+    <div class="container" style="width:400px;  ">
         <h2 style="color:white;">注册</h2>
         <div class="panel" style="min-height:190px;width:350px;  border:1px solid grey; padding:20px;">
             <form ng-submit="main.processForm()" name="main.userForm" method="post" class="bs-example bs-example-form" role="form">
@@ -52,6 +52,12 @@
                     <span ng-show="main.userForm.password.$error.minlength">密码长度不能小于6个字符！</span>
                     <span ng-show="main.userForm.password.$error.maxlength">密码长度不能大于20个字符！</span>
                 </span>
+                <div class="input-group">
+                    <span class="input-group-addon">昵称：</span>
+                    <input name="name" ng-model="main.formData.name"
+                           required type="text" class="form-control"
+                           placeholder="">
+                </div>               
                 <br>
                 <div class="input-group" style="float:right;">
                     <button class="btn btn-primary">
